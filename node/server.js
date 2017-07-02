@@ -39,8 +39,7 @@ var featureSchema = mongoose.Schema({
 app.use("/", express.static(__dirname + "/WebApp"));
 
 app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/WebApp/index.html');
-
+    res.sendFile(__dirname + '/WebApp/index.html');
 });
 
 // returns json of all stored features
@@ -59,7 +58,7 @@ app.get('/', function (req, res) {
 
         var feature = new Feature({
             name: req.url.substring(17, req.url.length), // extract name from url
-            dateInserted: new Date(),
+            date: new Date(),
             data: req.body
         });
         feature.save(function (error) {
@@ -74,4 +73,3 @@ app.get('/', function (req, res) {
     app.listen(3000, function () {
         console.log('http server now running on port ' + 3000);
     });
-
