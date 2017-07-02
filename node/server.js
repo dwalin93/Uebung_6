@@ -39,8 +39,6 @@ var featureSchema = mongoose.Schema({
 app.use("/", express.static(__dirname + "/WebApp"));
 
 app.get('/', function (req, res) {
-  console.log("At /");
-  console.log("__dirname :" + __dirname);
     res.sendFile(__dirname + '/WebApp/index.html');
 });
 
