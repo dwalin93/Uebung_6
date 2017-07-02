@@ -58,7 +58,7 @@ app.get('/', function (req, res) {
 
         var feature = new Feature({
             name: req.url.substring(17, req.url.length), // extract name from url
-            dateInserted: new Date(),
+            date: new Date(),
             data: req.body
         });
         feature.save(function (error) {
