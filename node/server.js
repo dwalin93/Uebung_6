@@ -39,8 +39,9 @@ var featureSchema = mongoose.Schema({
 app.use("/", express.static(__dirname + "/WebApp"));
 
 app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/WebApp/index.html');
-
+  console.log("At /");
+  console.log("__dirname :" + __dirname);
+    res.sendFile(__dirname + '/WebApp/index.html');
 });
 
 // returns json of all stored features
@@ -74,4 +75,3 @@ app.get('/', function (req, res) {
     app.listen(3000, function () {
         console.log('http server now running on port ' + 3000);
     });
-
