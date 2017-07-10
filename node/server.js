@@ -1,11 +1,12 @@
 "use strict";
-
+// Author:  "Niklas Trzaska: 416024"
+//          "Philipp Glahe: 420399"
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 /* database connection */
-mongoose.connect('mongodb://localhost:27017' + '/ex06DB');
+mongoose.connect('mongodb://localhost:27017' + '/geosoftDB');
 var database = mongoose.connection;
 
 var app = express();
@@ -23,6 +24,8 @@ var featureSchema = mongoose.Schema({
     date: Date,
     data: {}
 });
+
+var Feature = mongoose.model('Feature', featureSchema);
 
     /* http routing */
 // code which is executed on every request
@@ -42,7 +45,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/WebApp/index.html');
 });
 
-// returns json of all stored features
+/**
+ * Returns all features from the database
+ */
     app.get('/getFeatures', function (req, res) {
         Feature.find(function (error, features) {
             if (error) return console.error(error);
@@ -50,9 +55,11 @@ app.get('/', function (req, res) {
         });
     });
 
-// takes a json document via POST, which will be added to the database
-// name is passed via URL
-// url format: /addFeature?name=
+/**
+ *  Sends the drawn feature to the database
+ *  The name is retrieved through the url
+ *  The URL- format is /addFeature?name=
+ */
     app.post('/addFeature*', function (req, res) {
         console.log(JSON.stringify(req.body));
 

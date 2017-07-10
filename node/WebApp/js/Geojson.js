@@ -124,10 +124,86 @@ var getJson = function() {
         success: function(content, textStatus ){
            var file = JSON.parse(JSON.stringify(content));
            L.geoJSON(file).addTo(map);
-            JL('ajax').info("file was retrieved from " + url);
+            JL().info("file was retrieved from " + url);
         },
         error: function(xhr, textStatus, errorThrown){
-            JL('ajax').error("unable to get the file (" + errorThrown + ")");
+            JL().error("unable to get the file (" + errorThrown + ")");
         }
     });
 };
+/**
+ * Saves the drawn features in the database
+ *
+ */
+function saveToDB() {
+    var name = prompt('Please insert the desired name for the drawn feature:');
+    var items = drawnItems.toGeoJSON();
+
+    if ( name != undefined && items != '' ) {
+        var url = $('#dbUrl').val() + '/addFeature?name=' + name;
+
+        // perform post ajax
+        $.ajax({
+            type: 'POST',
+            data: items,
+            url: url,
+            timeout: 5000,
+            success: function(data, textStatus ){
+                JL().info("feature was succesfully added to the database on " + url);
+            },
+            error: function(xhr, textStatus, errorThrown){
+                JL().error('unable to save to database (' + errorThrown + ')');
+            }
+        });
+
+        //refresh table
+        loadFromDB();
+    } else {
+        JL().error('unable to save to database: Please provide json or name');
+    }
+};
+
+
+/**
+ * Loads the content from the server
+ * and shows the features on the map
+ */
+function loadFromDB() {
+    var url = $('#dbUrl').val() + '/getFeatures';
+
+    // perform ajax and add the features
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: url,
+        timeout: 5000,
+        success: function(content){
+
+            JL().info('database content was retrieved from ' + url);
+
+
+            // remove existing items
+            $('#DBContent').empty();
+            dbFeatures.clearLayers();
+
+            for (var i = 0; i < content.length; i++) {
+                // insert each layer into the table
+                $('#DBContent').append('<tr><td>'
+                    + (i+1) + '</td><td>'
+                    + content[i].name + '</td><td>'
+                    + content[i].data.features[0].geometry.type + '</td><td>'
+                    + content[i].date + '</td></tr>');
+                // insert into the map
+                dbFeatures.addLayer(L.geoJson(content[i].data));
+            }
+            $('#tableDB').removeClass('hidden');
+
+        },
+        error: function(xhr, textStatus, errorThrown){
+            JL().error("unable to get database content (" + errorThrown + ")");
+        }
+    });
+
+
+};
+

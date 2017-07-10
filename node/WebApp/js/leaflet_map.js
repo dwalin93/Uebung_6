@@ -10,6 +10,7 @@ JL().setOptions({"appenders": [consoleAppender]});
 
 var map = L.map('mapid');
 var myLayer;
+var dbFeatures;
 
 window.onload = function () {
 
@@ -49,6 +50,10 @@ window.onload = function () {
     var overlayMaps = {
         "Lines": myLayer
     };
+
+// Initialise the FeatureGroup to store database layers
+    dbFeatures = new L.FeatureGroup();
+    map.addLayer(dbFeatures);
 
 //Layer control function
     L.control.layers(baseMaps, overlayMaps).addTo(map);
